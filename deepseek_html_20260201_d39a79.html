@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ویرایشگر نامه هوشمند - نسخه حرفه‌ای</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* طرح رنگ مشکی و خاکستری */
+        :root {
+            --primary-black: #0a0a0a;
+            --dark-gray: #151515;
+            --medium-gray: #222222;
+            --light-gray: #333333;
+            --border-gray: #444444;
+            --text-light: #e8e8e8;
+            --text-lighter: #f8f8f8;
+            --accent-color: #6c63ff;
+            --accent-hover: #5752cc;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* طرح کلی صفحات */
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: var(--dark-gray);
+            border-radius: 20px;
+            border: 1px solid var(--border-gray);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--medium-gray), var(--light-gray));
+            padding: 28px 40px;
+            border-bottom: 1px solid var(--border-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(108, 99, 255, 0.1));
+        }
+
+        .page-header h1 {
+            color: var(--text-lighter);
+            font-size: 32px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 i {
+            color: var(--accent-color);
+            background: rgba(108, 99, 255, 0.15);
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .page-content {
+            padding: 40px;
+            min-height: 600px;
+        }
+
+        /* صفحه اصلی */
+        #indexPage .controls {
+            margin-bottom: 35px;
+            padding: 28px;
+            background-color: var(--medium-gray);
+            border-radius: 16px;
+            border: 1px solid var(--border-gray);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: var(--text-lighter);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-gray);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--accent-color);
+            font-size: 22px;
+        }
+
+        .paragraph-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, var(--light-gray), var(--border-gray));
+            color: var(--text-light);
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, var(--border-gray), var(--light-gray));
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn.active {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+        }
+
+        /* بخش هوش مصنوعی برای اصلاح متن */
+        .ai-section {
+            background: linear-gradient(135deg, 
+                rgba(108, 99, 255, 0.08), 
+                rgba(46, 204, 113, 0.08));
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-section::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(108, 99, 255, 0.1) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-header i {
+            color: var(--accent-color);
+            font-size: 28px;
+            background: rgba(108, 99, 255, 0.15);
+            padding: 14px;
+            border-radius: 14px;
+        }
+
+        .ai-header h3 {
+            color: var(--text-lighter);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .ai-description {
+            color: #c0c0c0;
+            margin-bottom: 25px;
+            line-height: 1.8;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-actions {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-btn {
+            background: linear-gradient(135deg, var(--accent-color), #8a85ff);
+            color: white;
+            border: none;
+            padding: 16px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            transform: translateX(100%);
+            transition: transform 0.6s ease;
+        }
+
+        .ai-btn:hover::before {
+            transform: translateX(0);
+        }
+
+        .ai-btn:hover {
+            background: linear-gradient(135deg, var(--accent-hover), #7470d8);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.4);
+        }
+
+        .ai-btn.secondary {
+            background: linear-gradient(135deg, var(--light-gray), var(--border-gray));
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-btn.secondary:hover {
+            background: linear-gradient(135deg, var(--border-gray), var(--light-gray));
+        }
+
+        .ai-btn.loading {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        .ai-btn.loading::after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* فیلد متن */
+        .textarea-container {
+            position: relative;
+            margin-bottom: 35px;
+        }
+
+        .textarea-container label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: var(--text-lighter);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 25px;
+            background-color: var(--medium-gray);
+            color: var(--text-light);
+            border: 2px solid var(--border-gray);
+            border-radius: 16px;
+            font-size: 17px;
+            line-height: 1.9;
+            resize: vertical;
+            transition: all 0.3s ease;
+            font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+            box-shadow: inset 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2),
+                        inset 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* دکمه‌های اصلی */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+            border: none;
+            padding: 18px 36px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(108, 99, 255, 0.4);
+        }
+
+        .primary-btn.secondary {
+            background: linear-gradient(135deg, var(--light-gray), var(--border-gray));
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .primary-btn.secondary:hover {
+            background: linear-gradient(135deg, var(--border-gray), var(--light-gray));
+        }
+
+        /* صفحه ویرایش/چاپ */
+        #editPage .edit-container {
+            display: flex;
+            gap: 35px;
+            min-height: 750px;
+        }
+
+        /* بخش فیلدهای سمت چپ - طراحی زیبا */
+        .fields-panel {
+            width: 320px;
+            background-color: var(--medium-gray);
+            border-radius: 18px;
+            padding: 28px;
+            border: 1px solid var(--border-gray);
+            height: fit-content;
+            position: sticky;
+            top: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .fields-panel h3 {
+            color: var(--text-lighter);
+            font-size: 22px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-gray);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .fields-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .fields-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .fields-list::-webkit-scrollbar-track {
+            background: var(--dark-gray);
+            border-radius: 4px;
+        }
+
+        .fields-list::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        .field-item {
+            background: linear-gradient(135deg, var(--light-gray), var(--medium-gray));
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 18px;
+            border: 1px solid var(--border-gray);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: grab;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .field-item:hover {
+            background: linear-gradient(135deg, var(--border-gray), var(--light-gray));
+            transform: translateX(-8px) translateY(-3px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .field-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .field-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .field-name {
+            color: var(--text-lighter);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .field-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .field-action-btn {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .field-action-btn:hover {
+            color: var(--accent-color);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        .field-preview {
+            color: #aaa;
+            font-size: 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 12px;
+            direction: ltr;
+            text-align: center;
+            font-family: monospace;
+            border: 1px dashed var(--border-gray);
+        }
+
+        .field-value-input {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-gray);
+            background-color: var(--dark-gray);
+            color: var(--text-light);
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .field-value-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        .add-field-btn {
+            width: 100%;
+            background: linear-gradient(135deg, transparent, transparent);
+            color: var(--accent-color);
+            border: 2px dashed var(--accent-color);
+            padding: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .add-field-btn:hover {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(108, 99, 255, 0.05));
+            border-style: solid;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.2);
+        }
+
+        /* بخش ویرایشگر با پس‌زمینه شطرنجی */
+        .editor-panel {
+            flex: 1;
+            background-color: var(--medium-gray);
+            border-radius: 18px;
+            padding: 35px;
+            border: 1px solid var(--border-gray);
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* پس‌زمینه شطرنجی فقط برای نمایش */
+        .editor-panel::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(108, 99, 255, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(108, 99, 255, 0.07) 1px, transparent 1px);
+            background-size: 25px 25px;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 18px;
+        }
+
+        /* محتوای ویرایشگر */
+        .editor-content {
+            position: relative;
+            z-index: 1;
+            min-height: 650px;
+            padding: 45px;
+            background-color: rgba(21, 21, 21, 0.9);
+            border-radius: 14px;
+            border: 2px solid var(--border-gray);
+            line-height: 2.1;
+            font-size: 19px;
+            color: var(--text-light);
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* استایل برای فیلدها در حالت ویرایش - زیبا و شیک */
+        .field-placeholder {
+            display: inline-block;
+            background: linear-gradient(135deg, 
+                rgba(108, 99, 255, 0.2), 
+                rgba(46, 204, 113, 0.2));
+            color: var(--text-lighter);
+            padding: 6px 16px;
+            margin: 0 6px;
+            border-radius: 10px;
+            border: 2px solid rgba(108, 99, 255, 0.5);
+            font-weight: 800;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        .field-placeholder:hover {
+            background: linear-gradient(135deg, 
+                rgba(108, 99, 255, 0.3), 
+                rgba(46, 204, 113, 0.3));
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            border-color: rgba(108, 99, 255, 0.8);
+        }
+
+        .field-placeholder::after {
+            content: "✎";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: var(--accent-color);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .field-placeholder:hover::after {
+            opacity: 1;
+        }
+
+        /* مخفی کردن شطرنجی در چاپ */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .editor-panel, .editor-panel * {
+                visibility: visible;
+            }
+            
+            .editor-panel {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
+                padding: 0;
+                box-shadow: none;
+                background: white !important;
+            }
+            
+            .editor-panel::before {
+                display: none !important;
+            }
+            
+            .editor-content {
+                background: white !important;
+                color: black !important;
+                border: none;
+                padding: 20mm;
+                min-height: auto;
+                box-shadow: none;
+                font-size: 14pt;
+                line-height: 1.6;
+            }
+            
+            /* در چاپ، فیلدها با استایل معمولی و با مقدار واقعی نمایش داده می‌شوند */
+            .field-placeholder {
+                background: transparent !important;
+                color: black !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                font-weight: normal;
+                font-size: inherit;
+            }
+            
+            .field-placeholder::after {
+                display: none !important;
+            }
+        }
+
+        /* دکمه بازگشت */
+        .back-btn {
+            background: linear-gradient(135deg, var(--light-gray), var(--border-gray));
+            color: var(--text-light);
+            border: none;
+            padding: 16px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--border-gray), var(--light-gray));
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ناحیه اطلاع‌رسانی */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 20px 28px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--success-color), #27ae60);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(100%) translateY(-20px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 400px;
+        }
+
+        .notification.show {
+            transform: translateX(0) translateY(0);
+            opacity: 1;
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger-color), #c0392b);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, var(--info-color), #2980b9);
+        }
+
+        /* استایل‌های پاسخ هوش مصنوعی */
+        .ai-response {
+            margin-top: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(40, 40, 40, 0.95));
+            border-radius: 14px;
+            border-right: 5px solid var(--accent-color);
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .ai-response.show {
+            display: block;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        /* مدال */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--dark-gray);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--border-gray);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-30px) scale(0.9); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--text-lighter);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--danger-color);
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 16px;
+            background: var(--medium-gray);
+            border: 2px solid var(--border-gray);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* پیش‌نمایش چاپ */
+        .print-preview-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: linear-gradient(135deg, var(--info-color), #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .print-preview-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(52, 152, 219, 0.4);
+        }
+
+        /* بارگذاری */
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 10001;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .loader.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(108, 99, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+        }
+
+        .loader p {
+            color: var(--text-light);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* وضعیت ذخیره */
+        .save-status {
+            color: #888;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .save-status.saving {
+            color: var(--warning-color);
+        }
+
+        .save-status.saved {
+            color: var(--success-color);
+            animation: pulse 1s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* واکنش‌گرا */
+        @media (max-width: 1200px) {
+            .edit-container {
+                flex-direction: column;
+            }
+            
+            .fields-panel {
+                width: 100%;
+                position: static;
+            }
+            
+            .editor-panel {
+                min-height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-content {
+                padding: 25px;
+            }
+            
+            .ai-actions {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .primary-btn, .back-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .editor-content {
+                padding: 25px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vazirmatn@33.003/font.css">
+</head>
+<body>
+    <!-- صفحه اصلی -->
+    <div id="indexPage" class="page-container">
+        <div class="page-header">
+            <h1><i class="fas fa-edit"></i> ویرایشگر نامه هوشمند - نسخه حرفه‌ای</h1>
+        </div>
+        
+        <div class="page-content">
+            <div class="controls">
+                <div class="section-title">
+                    <i class="fas fa-sliders-h"></i> تنظیمات پاراگراف
+                </div>
+                <div class="paragraph-controls">
+                    <button class="control-btn" id="alignRight" data-action="align" data-value="right">
+                        <i class="fas fa-align-right"></i> تراز راست
+                    </button>
+                    <button class="control-btn" id="alignCenter" data-action="align" data-value="center">
+                        <i class="fas fa-align-center"></i> تراز وسط
+                    </button>
+                    <button class="control-btn" id="alignJustify" data-action="align" data-value="justify">
+                        <i class="fas fa-align-justify"></i> تراز دوطرفه
+                    </button>
+                    <button class="control-btn" id="lineHeight" data-action="lineHeight" data-value="2">
+                        <i class="fas fa-text-height"></i> فاصله خطوط
+                    </button>
+                    <button class="control-btn" id="fontSize" data-action="fontSize" data-value="18">
+                        <i class="fas fa-font"></i> اندازه فونت
+                    </button>
+                    <button class="control-btn" id="fontBold" data-action="fontWeight" data-value="bold">
+                        <i class="fas fa-bold"></i> ضخیم
+                    </button>
+                </div>
+            </div>
+
+            <!-- بخش هوش مصنوعی برای اصلاح متن -->
+            <div class="ai-section">
+                <div class="ai-header">
+                    <i class="fas fa-robot"></i>
+                    <h3>هوش مصنوعی ویرایشگر - نسخه پیشرفته</h3>
+                </div>
+                <p class="ai-description">
+                    با استفاده از هوش مصنوعی پیشرفته، متن نامه شما را از نظر نگارشی، ادبی، ساختاری و محتوایی به صورت کامل بررسی و ارتقا می‌دهم. 
+                    امکان سفارشی‌سازی سطح ویرایش و انتخاب سبک نوشتاری نیز وجود دارد.
+                </p>
+                <div class="ai-actions">
+                    <button class="ai-btn" id="aiImprove" data-action="improve">
+                        <i class="fas fa-magic"></i> ارتقای هوشمند متن
+                    </button>
+                    <button class="ai-btn secondary" id="aiFormal" data-action="formal">
+                        <i class="fas fa-user-tie"></i> تبدیل به سبک رسمی
+                    </button>
+                    <button class="ai-btn secondary" id="aiGrammar" data-action="grammar">
+                        <i class="fas fa-spell-check"></i> بررسی کامل گرامر
+                    </button>
+                    <button class="ai-btn secondary" id="aiSummarize" data-action="summarize">
+                        <i class="fas fa-compress-alt"></i> خلاصه‌سازی متن
+                    </button>
+                </div>
+                <div id="aiResponse" class="ai-response">
+                    <p id="aiResponseText"></p>
+                </div>
+            </div>
+
+            <div class="textarea-container">
+                <label for="letterText">
+                    <i class="fas fa-file-alt"></i> متن نامه:
+                    <span id="wordCount" class="save-status" style="margin-right: auto; font-size: 14px;">
+                        <i class="fas fa-font"></i> <span id="wordCountNumber">0</span> کلمه
+                    </span>
+                </label>
+                <textarea id="letterText" placeholder="متن نامه خود را اینجا بنویسید...">با سلام و احترام
+
+این یک نمونه متن نامه است که برای تست ویرایشگر هوشمند ایجاد شده است. در این نامه قصد دارم توانایی‌های سیستم را بررسی کنم.
+
+با تشکر
+[نام شما]</textarea>
+            </div>
+            
+            <div class="action-buttons">
+                <div class="save-status" id="saveStatus">
+                    <i class="fas fa-save"></i> <span id="saveStatusText">آماده</span>
+                </div>
+                <div class="btn-group">
+                    <button class="primary-btn secondary" id="saveTemplateBtn">
+                        <i class="fas fa-save"></i> ذخیره قالب
+                    </button>
+                    <button class="primary-btn secondary" id="loadTemplateBtn">
+                        <i class="fas fa-folder-open"></i> بارگذاری قالب
+                    </button>
+                    <button class="primary-btn" id="editBtn">
+                        <i class="fas fa-edit"></i> ورود به صفحه ویرایش پیشرفته
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحه ویرایش/چاپ -->
+    <div id="editPage" class="page-container" style="display: none;">
+        <div class="page-header">
+            <h1><i class="fas fa-print"></i> ویرایش و چاپ نامه - حالت پیشرفته</h1>
+        </div>
+        
+        <div class="page-content">
+            <div class="edit-container">
+                <!-- بخش فیلدهای سمت چپ -->
+                <div class="fields-panel">
+                    <h3><i class="fas fa-list"></i> فیلدهای متغیر</h3>
+                    <div class="fields-list" id="fieldsList">
+                        <!-- فیلدها به صورت پویا اضافه می‌شوند -->
+                    </div>
+                    <button class="add-field-btn" id="addFieldBtn">
+                        <i class="fas fa-plus-circle"></i> افزودن فیلد جدید
+                    </button>
+                </div>
+                
+                <!-- بخش ویرایشگر -->
+                <div class="editor-panel">
+                    <div class="editor-content" id="editableContent" contenteditable="true">
+                        <!-- محتوای قابل ویرایش -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <div class="save-status" id="editSaveStatus">
+                    <i class="fas fa-sync-alt"></i> <span id="editSaveStatusText">همگام‌سازی شده</span>
+                </div>
+                <div class="btn-group">
+                    <button class="back-btn" id="backToIndexBtn">
+                        <i class="fas fa-arrow-right"></i> بازگشت به صفحه اصلی
+                    </button>
+                    <button class="primary-btn secondary" id="previewBtn">
+                        <i class="fas fa-eye"></i> پیش‌نمایش چاپ
+                    </button>
+                    <button class="primary-btn" id="printBtn">
+                        <i class="fas fa-print"></i> چاپ نامه نهایی
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- دکمه پیش‌نمایش چاپ -->
+    <button class="print-preview-btn" id="quickPrintPreview" style="display: none;">
+        <i class="fas fa-eye"></i> پیش‌نمایش چاپ
+    </button>
+
+    <!-- ناحیه اطلاع‌رسانی -->
+    <div id="notification" class="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">عملیات با موفقیت انجام شد</span>
+    </div>
+
+    <!-- مدال‌ها -->
+    <div id="fieldModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> افزودن فیلد جدید</h3>
+                <button class="close-modal" id="closeFieldModal">&times;</button>
+            </div>
+            <input type="text" id="fieldNameInput" class="modal-input" placeholder="نام فیلد (مثال: نام مدیر)" maxlength="50">
+            <input type="text" id="fieldDefaultInput" class="modal-input" placeholder="مقدار پیش‌فرض (اختیاری)">
+            <div class="modal-actions">
+                <button class="back-btn" id="cancelFieldModal">انصراف</button>
+                <button class="primary-btn" id="saveFieldModal">ذخیره فیلد</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لودر -->
+    <div id="loader" class="loader">
+        <div class="spinner"></div>
+        <p id="loaderText">در حال پردازش...</p>
+    </div>
+
+    <script>
+        // =============== سیستم مدیریت حرفه‌ای ===============
+        class SmartLetterEditor {
+            constructor() {
+                this.fields = [];
+                this.letterText = '';
+                this.isEditing = false;
+                this.currentTemplate = null;
+                this.undoStack = [];
+                this.redoStack = [];
+                this.autoSaveInterval = null;
+                this.isModified = false;
+                
+                this.init();
+            }
+            
+            init() {
+                this.cacheElements();
+                this.loadFromStorage();
+                this.setupEventListeners();
+                this.setupAutoSave();
+                this.updateWordCount();
+                
+                console.log('✅ ویرایشگر هوشمند با موفقیت راه‌اندازی شد');
+            }
+            
+            cacheElements() {
+                // صفحات
+                this.indexPage = document.getElementById('indexPage');
+                this.editPage = document.getElementById('editPage');
+                
+                // عناصر صفحه اصلی
+                this.letterTextarea = document.getElementById('letterText');
+                this.editBtn = document.getElementById('editBtn');
+                this.wordCountNumber = document.getElementById('wordCountNumber');
+                this.saveStatus = document.getElementById('saveStatus');
+                this.saveStatusText = document.getElementById('saveStatusText');
+                
+                // عناصر صفحه ویرایش
+                this.fieldsList = document.getElementById('fieldsList');
+                this.editableContent = document.getElementById('editableContent');
+                this.addFieldBtn = document.getElementById('addFieldBtn');
+                this.backToIndexBtn = document.getElementById('backToIndexBtn');
+                this.printBtn = document.getElementById('printBtn');
+                this.previewBtn = document.getElementById('previewBtn');
+                this.quickPrintPreview = document.getElementById('quickPrintPreview');
+                this.editSaveStatus = document.getElementById('editSaveStatus');
+                this.editSaveStatusText = document.getElementById('editSaveStatusText');
+                
+                // هوش مصنوعی
+                this.aiImproveBtn = document.getElementById('aiImprove');
+                this.aiFormalBtn = document.getElementById('aiFormal');
+                this.aiGrammarBtn = document.getElementById('aiGrammar');
+                this.aiSummarizeBtn = document.getElementById('aiSummarize');
+                this.aiResponse = document.getElementById('aiResponse');
+                this.aiResponseText = document.getElementById('aiResponseText');
+                
+                // کنترل‌ها
+                this.controlBtns = document.querySelectorAll('.control-btn');
+                this.saveTemplateBtn = document.getElementById('saveTemplateBtn');
+                this.loadTemplateBtn = document.getElementById('loadTemplateBtn');
+                
+                // مدال
+                this.fieldModal = document.getElementById('fieldModal');
+                this.fieldNameInput = document.getElementById('fieldNameInput');
+                this.fieldDefaultInput = document.getElementById('fieldDefaultInput');
+                this.closeFieldModal = document.getElementById('closeFieldModal');
+                this.cancelFieldModal = document.getElementById('cancelFieldModal');
+                this.saveFieldModal = document.getElementById('saveFieldModal');
+                
+                // لودر و اطلاع‌رسانی
+                this.loader = document.getElementById('loader');
+                this.loaderText = document.getElementById('loaderText');
+                this.notification = document.getElementById('notification');
+                this.notificationText = document.getElementById('notificationText');
+            }
+            
+            setupEventListeners() {
+                // رویدادهای اصلی
+                this.editBtn.addEventListener('click', () => this.enterEditMode());
+                this.backToIndexBtn.addEventListener('click', () => this.exitEditMode());
+                this.printBtn.addEventListener('click', () => this.printLetter());
+                this.previewBtn.addEventListener('click', () => this.showPrintPreview());
+                this.quickPrintPreview.addEventListener('click', () => this.showPrintPreview());
+                
+                // فیلدها
+                this.addFieldBtn.addEventListener('click', () => this.showAddFieldModal());
+                this.closeFieldModal.addEventListener('click', () => this.hideAddFieldModal());
+                this.cancelFieldModal.addEventListener('click', () => this.hideAddFieldModal());
+                this.saveFieldModal.addEventListener('click', () => this.saveNewField());
+                
+                // هوش مصنوعی
+                this.aiImproveBtn.addEventListener('click', () => this.aiProcess('improve'));
+                this.aiFormalBtn.addEventListener('click', () => this.aiProcess('formal'));
+                this.aiGrammarBtn.addEventListener('click', () => this.aiProcess('grammar'));
+                this.aiSummarizeBtn.addEventListener('click', () => this.aiProcess('summarize'));
+                
+                // کنترل‌ها
+                this.controlBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => this.applyTextControl(e));
+                });
+                
+                // ذخیره و بارگذاری
+                this.saveTemplateBtn.addEventListener('click', () => this.saveTemplate());
+                this.loadTemplateBtn.addEventListener('click', () => this.loadTemplate());
+                
+                // رویدادهای متن
+                this.letterTextarea.addEventListener('input', () => {
+                    this.letterText = this.letterTextarea.value;
+                    this.updateWordCount();
+                    this.markAsModified();
+                });
+                
+                // رویدادهای صفحه ویرایش
+                this.editableContent.addEventListener('input', () => {
+                    this.updateLetterFromEditable();
+                    this.markAsModified();
+                });
+                
+                // رویدادهای کلیک روی فیلدها در ویرایشگر
+                this.editableContent.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('field-placeholder')) {
+                        this.editFieldValue(e.target);
+                    }
+                });
+                
+                // رویدادهای کشیدن و رها کردن
+                this.setupDragAndDrop();
+                
+                // کلیدهای میانبر
+                document.addEventListener('keydown', (e) => this.handleShortcuts(e));
+            }
+            
+            // =============== ذخیره‌سازی و بارگذاری ===============
+            setupAutoSave() {
+                this.autoSaveInterval = setInterval(() => {
+                    if (this.isModified) {
+                        this.saveToStorage();
+                        this.isModified = false;
+                        this.showSaveStatus('ذخیره خودکار انجام شد', 'saved');
+                    }
+                }, 10000); // هر 10 ثانیه
+            }
+            
+            saveToStorage() {
+                const data = {
+                    fields: this.fields,
+                    letterText: this.letterText,
+                    lastSaved: new Date().toISOString()
+                };
+                
+                try {
+                    localStorage.setItem('smartLetterEditor', JSON.stringify(data));
+                    return true;
+                } catch (e) {
+                    console.error('خطا در ذخیره‌سازی:', e);
+                    this.showNotification('خطا در ذخیره‌سازی داده‌ها', 'error');
+                    return false;
+                }
+            }
+            
+            loadFromStorage() {
+                try {
+                    const saved = localStorage.getItem('smartLetterEditor');
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        this.fields = data.fields || this.getDefaultFields();
+                        this.letterText = data.letterText || this.getDefaultText();
+                        this.letterTextarea.value = this.letterText;
+                        this.showNotification('داده‌های ذخیره شده بارگذاری شدند', 'info');
+                    } else {
+                        this.fields = this.getDefaultFields();
+                        this.letterText = this.getDefaultText();
+                    }
+                } catch (e) {
+                    console.error('خطا در بارگذاری داده‌ها:', e);
+                    this.fields = this.getDefaultFields();
+                    this.letterText = this.getDefaultText();
+                }
+                
+                this.renderFieldsList();
+                this.updateEditableContent();
+            }
+            
+            getDefaultFields() {
+                return [
+                    { id: 1, name: 'نام کامل', value: '', placeholder: '{{نام_کامل}}', required: true },
+                    { id: 2, name: 'تاریخ', value: this.getCurrentDate(), placeholder: '{{تاریخ}}', required: true },
+                    { id: 3, name: 'شماره تماس', value: '', placeholder: '{{شماره_تماس}}', required: false },
+                    { id: 4, name: 'آدرس', value: '', placeholder: '{{آدرس}}', required: false },
+                    { id: 5, name: 'سمت', value: '', placeholder: '{{سمت}}', required: false }
+                ];
+            }
+            
+            getDefaultText() {
+                return `با سلام و احترام
+
+این یک نمونه متن نامه است که برای تست ویرایشگر هوشمند ایجاد شده است. در این نامه قصد دارم توانایی‌های سیستم را بررسی کنم.
+
+با تشکر
+{{نام_کامل}}
+{{تاریخ}}`;
+            }
+            
+            getCurrentDate() {
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return now.toLocaleDateString('fa-IR', options);
+            }
+            
+            // =============== مدیریت فیلدها ===============
+            renderFieldsList() {
+                this.fieldsList.innerHTML = '';
+                
+                this.fields.forEach(field => {
+                    const fieldElement = this.createFieldElement(field);
+                    this.fieldsList.appendChild(fieldElement);
+                });
+            }
+            
+            createFieldElement(field) {
+                const div = document.createElement('div');
+                div.className = 'field-item';
+                div.draggable = true;
+                div.dataset.id = field.id;
+                
+                div.innerHTML = `
+                    <div class="field-header">
+                        <span class="field-name">${field.name}</span>
+                        <div class="field-actions">
+                            <button class="field-action-btn edit-field" title="ویرایش">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="field-action-btn delete-field" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="field-preview">${field.placeholder}</div>
+                    <input type="text" 
+                           class="field-value-input" 
+                           placeholder="مقدار ${field.name}" 
+                           value="${this.escapeHtml(field.value)}"
+                           data-id="${field.id}">
+                `;
+                
+                // رویدادهای فیلد
+                const input = div.querySelector('.field-value-input');
+                input.addEventListener('input', (e) => {
+                    const fieldId = parseInt(e.target.dataset.id);
+                    this.updateFieldValue(fieldId, e.target.value);
+                });
+                
+                // رویدادهای دکمه‌ها
+                div.querySelector('.edit-field').addEventListener('click', () => this.editExistingField(field.id));
+                div.querySelector('.delete-field').addEventListener('click', () => this.deleteField(field.id));
+                
+                // رویدادهای کشیدن و رها کردن
+                div.addEventListener('dragstart', (e) => this.handleDragStart(e, field));
+                div.addEventListener('dragend', () => div.classList.remove('dragging'));
+                
+                return div;
+            }
+            
+            showAddFieldModal() {
+                this.fieldNameInput.value = '';
+                this.fieldDefaultInput.value = '';
+                this.fieldModal.style.display = 'flex';
+                this.fieldNameInput.focus();
+            }
+            
+            hideAddFieldModal() {
+                this.fieldModal.style.display = 'none';
+            }
+            
+            saveNewField() {
+                const name = this.fieldNameInput.value.trim();
+                const defaultValue = this.fieldDefaultInput.value.trim();
+                
+                if (!name) {
+                    this.showNotification('لطفاً نام فیلد را وارد کنید', 'warning');
+                    return;
+                }
+                
+                // بررسی تکراری نبودن
+                const placeholder = `{{${name.replace(/\s+/g, '_')}}}`;
+                const exists = this.fields.some(f => f.placeholder === placeholder);
+                
+                if (exists) {
+                    this.showNotification('فیلد با این نام از قبل وجود دارد', 'warning');
+                    return;
+                }
+                
+                const newId = this.fields.length > 0 ? Math.max(...this.fields.map(f => f.id)) + 1 : 1;
+                
+                this.fields.push({
+                    id: newId,
+                    name: name,
+                    value: defaultValue,
+                    placeholder: placeholder,
+                    required: false
+                });
+                
+                this.renderFieldsList();
+                this.updateEditableContent();
+                this.hideAddFieldModal();
+                this.markAsModified();
+                this.showNotification(`فیلد "${name}" با موفقیت اضافه شد`, 'success');
+            }
+            
+            editExistingField(fieldId) {
+                const field = this.fields.find(f => f.id === fieldId);
+                if (!field) return;
+                
+                this.fieldNameInput.value = field.name;
+                this.fieldDefaultInput.value = field.value;
+                this.fieldModal.style.display = 'flex';
+                
+                // تغییر رفتار دکمه ذخیره
+                this.saveFieldModal.onclick = () => {
+                    const newName = this.fieldNameInput.value.trim();
+                    const newValue = this.fieldDefaultInput.value.trim();
+                    
+                    if (!newName) {
+                        this.showNotification('لطفاً نام فیلد را وارد کنید', 'warning');
+                        return;
+                    }
+                    
+                    field.name = newName;
+                    field.value = newValue;
+                    field.placeholder = `{{${newName.replace(/\s+/g, '_')}}}`;
+                    
+                    // به‌روزرسانی تمام occurrences در متن
+                    this.letterText = this.letterText.replace(
+                        new RegExp(`\\{\\{${field.name.replace(/\s+/g, '_')}\\}\\}`, 'g'),
+                        field.placeholder
+                    );
+                    this.letterTextarea.value = this.letterText;
+                    
+                    this.renderFieldsList();
+                    this.updateEditableContent();
+                    this.hideAddFieldModal();
+                    this.markAsModified();
+                    this.showNotification('فیلد با موفقیت ویرایش شد', 'success');
+                    
+                    // بازگرداندن رفتار اصلی
+                    this.saveFieldModal.onclick = () => this.saveNewField();
+                };
+            }
+            
+            deleteField(fieldId) {
+                const field = this.fields.find(f => f.id === fieldId);
+                if (!field) return;
+                
+                if (confirm(`آیا از حذف فیلد "${field.name}" اطمینان دارید؟`)) {
+                    // حذف از آرایه
+                    this.fields = this.fields.filter(f => f.id !== fieldId);
+                    
+                    // حذف از متن
+                    const regex = new RegExp(field.placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                    this.letterText = this.letterText.replace(regex, field.value || '');
+                    this.letterTextarea.value = this.letterText;
+                    
+                    this.renderFieldsList();
+                    this.updateEditableContent();
+                    this.markAsModified();
+                    this.showNotification('فیلد با موفقیت حذف شد', 'success');
+                }
+            }
+            
+            updateFieldValue(fieldId, value) {
+                const field = this.fields.find(f => f.id === fieldId);
+                if (field) {
+                    field.value = value;
+                    this.updateEditableContent();
+                    this.markAsModified();
+                }
+            }
+            
+            editFieldValue(fieldElement) {
+                const fieldId = parseInt(fieldElement.dataset.fieldId);
+                const field = this.fields.find(f => f.id === fieldId);
+                
+                if (field) {
+                    const newValue = prompt(`مقدار جدید برای "${field.name}" را وارد کنید:`, field.value);
+                    if (newValue !== null) {
+                        field.value = newValue;
+                        this.updateEditableContent();
+                        this.markAsModified();
+                        this.showNotification(`مقدار "${field.name}" به‌روزرسانی شد`, 'success');
+                    }
+                }
+            }
+            
+            // =============== مدیریت متن ===============
+            updateEditableContent() {
+                let content = this.letterText;
+                
+                // جایگزینی فیلدها
+                this.fields.forEach(field => {
+                    const regex = new RegExp(field.placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                    if (this.isEditing) {
+                        // حالت ویرایش: نمایش زیبای فیلدها
+                        content = content.replace(regex, 
+                            `<span class="field-placeholder" data-field-id="${field.id}" contenteditable="false">${field.placeholder}</span>`);
+                    } else {
+                        // حالت عادی: نمایش مقادیر
+                        content = content.replace(regex, field.value || `[${field.name}]`);
+                    }
+                });
+                
+                this.editableContent.innerHTML = content;
+            }
+            
+            updateLetterFromEditable() {
+                let content = this.editableContent.innerHTML;
+                
+                // تبدیل فیلدهای زیبا به placeholderهای متنی
+                const fieldElements = this.editableContent.querySelectorAll('.field-placeholder');
+                fieldElements.forEach(el => {
+                    const placeholder = el.textContent;
+                    content = content.replace(el.outerHTML, placeholder);
+                });
+                
+                // استخراج متن خالص
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = content;
+                this.letterText = tempDiv.textContent || tempDiv.innerText;
+                this.letterTextarea.value = this.letterText;
+                
+                this.updateWordCount();
+            }
+            
+            updateWordCount() {
+                const text = this.letterTextarea.value.trim();
+                const words = text ? text.split(/\s+/).filter(word => word.length > 0) : [];
+                this.wordCountNumber.textContent = words.length;
+            }
+            
+            // =============== هوش مصنوعی ===============
+            async aiProcess(action) {
+                const text = this.letterTextarea.value.trim();
+                
+                if (!text) {
+                    this.showNotification('لطفاً ابتدا متن خود را وارد کنید', 'warning');
+                    return;
+                }
+                
+                this.showLoader(`در حال پردازش متن با هوش مصنوعی...`);
+                
+                try {
+                    // شبیه‌سازی پردازش هوش مصنوعی
+                    await this.simulateAIProcessing(action, text);
+                } catch (error) {
+                    console.error('خطا در پردازش هوش مصنوعی:', error);
+                    this.showNotification('خطا در پردازش هوش مصنوعی', 'error');
+                } finally {
+                    this.hideLoader();
+                }
+            }
+            
+            simulateAIProcessing(action, text) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        let result = text;
+                        let message = '';
+                        
+                        switch(action) {
+                            case 'improve':
+                                result = this.improveText(text);
+                                message = 'متن شما با موفقیت ارتقا یافت. تغییرات شامل بهبود لحن، ساختار و روان‌سازی جملات است.';
+                                break;
+                            case 'formal':
+                                result = this.makeFormal(text);
+                                message = 'متن شما به صورت رسمی و اداری تبدیل شد.';
+                                break;
+                            case 'grammar':
+                                result = this.correctGrammar(text);
+                                message = 'بررسی گرامر و املاء انجام شد. خطاهای احتمالی اصلاح شدند.';
+                                break;
+                            case 'summarize':
+                                result = this.summarizeText(text);
+                                message = 'متن شما خلاصه‌سازی شد. نکات اصلی حفظ شده‌اند.';
+                                break;
+                        }
+                        
+                        this.letterTextarea.value = result;
+                        this.letterText = result;
+                        this.updateWordCount();
+                        this.markAsModified();
+                        
+                        this.aiResponseText.textContent = message;
+                        this.aiResponse.classList.add('show');
+                        
+                        this.showNotification('پردازش هوش مصنوعی با موفقیت انجام شد', 'success');
+                        resolve();
+                    }, 2000);
+                });
+            }
+            
+            improveText(text) {
+                const improvements = [
+                    [/با سلام و احترام/gi, 'با عرض سلام و احترام'],
+                    [/این یک/gi, 'این'],
+                    [/تست/gi, 'آزمایش'],
+                    [/بررسی کنم/gi, 'مورد ارزیابی قرار دهم'],
+                    [/میخوام/gi, 'می‌خواهم'],
+                    [/میشه/gi, 'می‌شود'],
+                    [/چطوری/gi, 'چگونه'],
+                    [/خیلی/gi, 'بسیار'],
+                    [/جالبه/gi, 'جالب است'],
+                    [/حتما/gi, 'قطعاً']
+                ];
+                
+                let result = text;
+                improvements.forEach(([pattern, replacement]) => {
+                    result = result.replace(pattern, replacement);
+                });
+                
+                return result + '\n\nبا سپاس و احترام فراوان';
+            }
+            
+            makeFormal(text) {
+                const formalMap = [
+                    [/سلام/gi, 'عرض سلام'],
+                    [/خداحافظ/gi, 'با احترام'],
+                    [/ممنون/gi, 'سپاسگزارم'],
+                    [/مرسی/gi, 'متشکرم'],
+                    [/لطفا/gi, 'لطفاً'],
+                    [/فکر میکنم/gi, 'به نظر می‌رسد'],
+                    [/میدونم/gi, 'مطلع هستم'],
+                    [/نمیدونم/gi, 'اطلاعی ندارم']
+                ];
+                
+                let result = text;
+                formalMap.forEach(([pattern, replacement]) => {
+                    result = result.replace(pattern, replacement);
+                });
+                
+                return result;
+            }
+            
+            correctGrammar(text) {
+                const corrections = [
+                    [/ايشون/gi, 'ایشان'],
+                    [/برام/gi, 'برای من'],
+                    [/رو/gi, 'را'],
+                    [/آپلود/gi, 'بارگذاری'],
+                    [/دانلود/gi, 'بارگیری'],
+                    [/ميشود/gi, 'می‌شود'],
+                    [/ميخواهد/gi, 'می‌خواهد'],
+                    [/هاي/gi, 'های'],
+                    [/ترين/gi, 'ترین']
+                ];
+                
+                let result = text;
+                corrections.forEach(([pattern, replacement]) => {
+                    result = result.replace(pattern, replacement);
+                });
+                
+                return result;
+            }
+            
+            summarizeText(text) {
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                if (sentences.length <= 3) return text;
+                
+                const importantSentences = sentences
+                    .filter(s => s.length > 20)
+                    .slice(0, 3);
+                
+                return importantSentences.join('. ') + '.';
+            }
+            
+            // =============== کنترل‌های متن ===============
+            applyTextControl(e) {
+                const btn = e.currentTarget;
+                const action = btn.dataset.action;
+                const value = btn.dataset.value;
+                
+                switch(action) {
+                    case 'align':
+                        this.letterTextarea.style.textAlign = value;
+                        btn.classList.toggle('active', true);
+                        break;
+                    case 'lineHeight':
+                        this.letterTextarea.style.lineHeight = value;
+                        break;
+                    case 'fontSize':
+                        this.letterTextarea.style.fontSize = value + 'px';
+                        break;
+                    case 'fontWeight':
+                        this.letterTextarea.style.fontWeight = 
+                            this.letterTextarea.style.fontWeight === 'bold' ? 'normal' : 'bold';
+                        btn.classList.toggle('active', this.letterTextarea.style.fontWeight === 'bold');
+                        break;
+                }
+                
+                this.markAsModified();
+                this.showNotification('تنظیمات اعمال شد', 'info');
+            }
+            
+            // =============== کشیدن و رها کردن ===============
+            setupDragAndDrop() {
+                this.editableContent.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'copy';
+                });
+                
+                this.editableContent.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const placeholder = e.dataTransfer.getData('text/plain');
+                    
+                    if (!placeholder) return;
+                    
+                    const selection = window.getSelection();
+                    if (!selection.rangeCount) return;
+                    
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    
+                    const field = this.fields.find(f => f.placeholder === placeholder);
+                    if (!field) return;
+                    
+                    const span = document.createElement('span');
+                    span.className = 'field-placeholder';
+                    span.contentEditable = false;
+                    span.textContent = placeholder;
+                    span.dataset.fieldId = field.id;
+                    
+                    range.insertNode(span);
+                    
+                    this.updateLetterFromEditable();
+                    this.markAsModified();
+                    this.showNotification(`فیلد "${field.name}" به متن اضافه شد`, 'info');
+                });
+            }
+            
+            handleDragStart(e, field) {
+                e.dataTransfer.setData('text/plain', field.placeholder);
+                e.dataTransfer.effectAllowed = 'copy';
+                e.currentTarget.classList.add('dragging');
+            }
+            
+            // =============== حالت‌ها ===============
+            enterEditMode() {
+                this.letterText = this.letterTextarea.value;
+                this.isEditing = true;
+                this.indexPage.style.display = 'none';
+                this.editPage.style.display = 'block';
+                this.quickPrintPreview.style.display = 'flex';
+                this.updateEditableContent();
+                this.showNotification('وارد حالت ویرایش پیشرفته شدید', 'info');
+            }
+            
+            exitEditMode() {
+                this.isEditing = false;
+                this.updateLetterFromEditable();
+                this.editPage.style.display = 'none';
+                this.indexPage.style.display = 'block';
+                this.quickPrintPreview.style.display = 'none';
+                this.saveToStorage();
+                this.showNotification('تغییرات ذخیره شدند', 'success');
+            }
+            
+            // =============== چاپ ===============
+            printLetter() {
+                this.isEditing = false;
+                this.updateEditableContent();
+                
+                setTimeout(() => {
+                    window.print();
+                }, 100);
+            }
+            
+            showPrintPreview() {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html dir="rtl" lang="fa">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>پیش‌نمایش چاپ</title>
+                        <style>
+                            body { 
+                                font-family: 'Vazirmatn', Tahoma; 
+                                line-height: 1.8; 
+                                padding: 40px; 
+                                background: white; 
+                                color: black;
+                                font-size: 14pt;
+                            }
+                            .print-content { 
+                                white-space: pre-wrap;
+                                border: 1px solid #ddd;
+                                padding: 30px;
+                                border-radius: 10px;
+                                background: white;
+                            }
+                            .field-placeholder { 
+                                background: #f0f0f0; 
+                                padding: 2px 6px; 
+                                border-radius: 4px; 
+                                border: 1px dashed #ccc;
+                            }
+                        </style>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vazirmatn@33.003/font.css">
+                    </head>
+                    <body>
+                        <div class="print-content">${this.getPrintableContent()}</div>
+                        <script>
+                            setTimeout(() => window.print(), 500);
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            }
+            
+            getPrintableContent() {
+                let content = this.letterText;
+                this.fields.forEach(field => {
+                    const regex = new RegExp(field.placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                    content = content.replace(regex, field.value || `[${field.name}]`);
+                });
+                return content.replace(/\n/g, '<br>');
+            }
+            
+            // =============== قالب‌ها ===============
+            saveTemplate() {
+                const templateName = prompt('نام قالب را وارد کنید:', `قالب ${new Date().toLocaleDateString('fa-IR')}`);
+                if (!templateName) return;
+                
+                const template = {
+                    name: templateName,
+                    fields: this.fields,
+                    letterText: this.letterText,
+                    created: new Date().toISOString()
+                };
+                
+                try {
+                    const templates = JSON.parse(localStorage.getItem('letterTemplates') || '[]');
+                    templates.push(template);
+                    localStorage.setItem('letterTemplates', JSON.stringify(templates));
+                    this.showNotification(`قالب "${templateName}" ذخیره شد`, 'success');
+                } catch (e) {
+                    this.showNotification('خطا در ذخیره قالب', 'error');
+                }
+            }
+            
+            loadTemplate() {
+                try {
+                    const templates = JSON.parse(localStorage.getItem('letterTemplates') || '[]');
+                    if (templates.length === 0) {
+                        this.showNotification('قالب‌ای برای بارگذاری وجود ندارد', 'warning');
+                        return;
+                    }
+                    
+                    const templateNames = templates.map(t => t.name);
+                    const selectedName = prompt(`قالب‌های موجود:\n${templateNames.join('\n')}\n\nنام قالب مورد نظر را وارد کنید:`);
+                    
+                    if (!selectedName) return;
+                    
+                    const template = templates.find(t => t.name === selectedName);
+                    if (!template) {
+                        this.showNotification('قالب یافت نشد', 'error');
+                        return;
+                    }
+                    
+                    this.fields = template.fields;
+                    this.letterText = template.letterText;
+                    this.letterTextarea.value = this.letterText;
+                    
+                    this.renderFieldsList();
+                    this.updateEditableContent();
+                    this.updateWordCount();
+                    this.markAsModified();
+                    
+                    this.showNotification(`قالب "${selectedName}" بارگذاری شد`, 'success');
+                } catch (e) {
+                    this.showNotification('خطا در بارگذاری قالب', 'error');
+                }
+            }
+            
+            // =============== ابزارها ===============
+            markAsModified() {
+                this.isModified = true;
+                this.showSaveStatus('ذخیره نشده', 'saving');
+            }
+            
+            showSaveStatus(text, type) {
+                this.saveStatusText.textContent = text;
+                this.saveStatus.className = 'save-status ' + type;
+                
+                if (this.editSaveStatusText) {
+                    this.editSaveStatusText.textContent = text;
+                    this.editSaveStatus.className = 'save-status ' + type;
+                }
+                
+                if (type === 'saved') {
+                    setTimeout(() => {
+                        this.showSaveStatus('آماده', '');
+                    }, 2000);
+                }
+            }
+            
+            showNotification(message, type = 'success') {
+                this.notificationText.textContent = message;
+                this.notification.className = `notification ${type} show`;
+                
+                setTimeout(() => {
+                    this.notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            showLoader(text = 'در حال پردازش...') {
+                this.loaderText.textContent = text;
+                this.loader.classList.add('show');
+            }
+            
+            hideLoader() {
+                this.loader.classList.remove('show');
+            }
+            
+            handleShortcuts(e) {
+                // Ctrl+S برای ذخیره
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    this.saveToStorage();
+                    this.showNotification('ذخیره شد', 'success');
+                }
+                
+                // Ctrl+Z برای بازگشت
+                if (e.ctrlKey && e.key === 'z') {
+                    e.preventDefault();
+                    // پیاده‌سازی undo
+                }
+                
+                // Ctrl+Y برای بازگرداندن
+                if (e.ctrlKey && e.key === 'y') {
+                    e.preventDefault();
+                    // پیاده‌سازی redo
+                }
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+        
+        // راه‌اندازی سیستم
+        document.addEventListener('DOMContentLoaded', () => {
+            window.editor = new SmartLetterEditor();
+        });
+    </script>
+</body>
+</html>
